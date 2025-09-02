@@ -1,0 +1,99 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "配置亖米网格网关",
+        "description": "请输入网关信息",
+        "data": {
+          "host": "网关IP地址",
+          "port": "端口",
+          "timeout": "超时时间(秒)"
+        },
+        "data_description": {
+          "host": "网关的IP地址",
+          "port": "网关通信端口，默认4196",
+          "timeout": "连接超时时间"
+        }
+      },
+      "discovery": {
+        "title": "选择网关",
+        "description": "发现 {gateway_count} 个网关，请选择要配置的网关:",
+        "data": {
+          "gateway": "网关"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "无法连接到网关",
+      "invalid_host": "无效的主机地址",
+      "timeout": "连接超时",
+      "unknown": "未知错误"
+    },
+    "abort": {
+      "already_configured": "网关已经配置过了",
+      "no_host": "未找到主机信息"
+    }
+  },
+  "entity": {
+    "switch": {
+      "switch_1": {
+        "name": "开关1"
+      },
+      "switch_2": {
+        "name": "开关2"
+      },
+      "switch_3": {
+        "name": "开关3"
+      },
+      "switch_4": {
+        "name": "开关4"
+      },
+      "switch_5": {
+        "name": "开关5"
+      },
+      "switch_6": {
+        "name": "开关6"
+      }
+    },
+    "light": {
+      "brightness": {
+        "name": "亮度"
+      },
+      "color_temp": {
+        "name": "色温"
+      }
+    },
+    "binary_sensor": {
+      "door_status": {
+        "name": "门磁状态"
+      },
+      "motion_status": {
+        "name": "人体感应"
+      }
+    },
+    "sensor": {
+      "temperature": {
+        "name": "温度"
+      },
+      "humidity": {
+        "name": "湿度"
+      },
+      "battery_level": {
+        "name": "电池电量"
+      }
+    },
+    "cover": {
+      "position": {
+        "name": "位置"
+      }
+    },
+    "climate": {
+      "current_temperature": {
+        "name": "当前温度"
+      },
+      "target_temperature": {
+        "name": "目标温度"
+      }
+    }
+  }
+}

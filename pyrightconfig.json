@@ -1,0 +1,20 @@
+{
+  "include": [
+    "custom_components/**"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "**/.pytest_cache"
+  ],
+  "reportMissingImports": "none",
+  "reportMissingTypeStubs": "none",
+  "reportOptionalMemberAccess": "warning",
+  "pythonVersion": "3.12",
+  "pythonPlatform": "All",
+  "executionEnvironments": [
+    {
+      "root": "custom_components",
+      "reportMissingImports": "none"
+    }
+  ]
+}

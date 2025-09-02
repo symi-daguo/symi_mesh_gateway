@@ -1,0 +1,99 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Symi Mesh Gateway",
+        "description": "Please enter gateway information",
+        "data": {
+          "host": "Gateway IP Address",
+          "port": "Port",
+          "timeout": "Timeout (seconds)"
+        },
+        "data_description": {
+          "host": "IP address of the gateway",
+          "port": "Gateway communication port, default 4196",
+          "timeout": "Connection timeout"
+        }
+      },
+      "discovery": {
+        "title": "Select Gateway",
+        "description": "Found {gateway_count} gateways, please select the one to configure:",
+        "data": {
+          "gateway": "Gateway"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to gateway",
+      "invalid_host": "Invalid host address",
+      "timeout": "Connection timeout",
+      "unknown": "Unknown error"
+    },
+    "abort": {
+      "already_configured": "Gateway is already configured",
+      "no_host": "No host information found"
+    }
+  },
+  "entity": {
+    "switch": {
+      "switch_1": {
+        "name": "Switch 1"
+      },
+      "switch_2": {
+        "name": "Switch 2"
+      },
+      "switch_3": {
+        "name": "Switch 3"
+      },
+      "switch_4": {
+        "name": "Switch 4"
+      },
+      "switch_5": {
+        "name": "Switch 5"
+      },
+      "switch_6": {
+        "name": "Switch 6"
+      }
+    },
+    "light": {
+      "brightness": {
+        "name": "Brightness"
+      },
+      "color_temp": {
+        "name": "Color Temperature"
+      }
+    },
+    "binary_sensor": {
+      "door_status": {
+        "name": "Door Status"
+      },
+      "motion_status": {
+        "name": "Motion Detection"
+      }
+    },
+    "sensor": {
+      "temperature": {
+        "name": "Temperature"
+      },
+      "humidity": {
+        "name": "Humidity"
+      },
+      "battery_level": {
+        "name": "Battery Level"
+      }
+    },
+    "cover": {
+      "position": {
+        "name": "Position"
+      }
+    },
+    "climate": {
+      "current_temperature": {
+        "name": "Current Temperature"
+      },
+      "target_temperature": {
+        "name": "Target Temperature"
+      }
+    }
+  }
+}

@@ -136,3 +136,11 @@ Thumbs.db
 # Home Assistant
 *.pyc
 *.pyo
+
+# Test files
+test_*.py
+tests/
+__tests__/
+
+# Development tools
+dev-tools/

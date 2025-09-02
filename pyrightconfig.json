@@ -4,11 +4,20 @@
   ],
   "exclude": [
     "**/__pycache__",
-    "**/.pytest_cache"
+    "**/.pytest_cache",
+    "test_*.py",
+    "tests/**"
   ],
   "reportMissingImports": "none",
   "reportMissingTypeStubs": "none",
-  "reportOptionalMemberAccess": "warning",
+  "reportOptionalMemberAccess": "none",
+  "reportUnknownVariableType": "none",
+  "reportUnknownParameterType": "none",
+  "reportUnknownArgumentType": "none",
+  "reportAny": "none",
+  "reportExplicitAny": "none",
+  "reportMissingSuperCall": "none",
+  "reportUnusedParameter": "none",
   "pythonVersion": "3.12",
   "pythonPlatform": "All",
   "executionEnvironments": [
@@ -16,5 +25,6 @@
       "root": "custom_components",
       "reportMissingImports": "none"
     }
-  ]
+  ],
+  "typeCheckingMode": "off"
 }

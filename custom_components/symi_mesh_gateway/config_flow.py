@@ -5,8 +5,6 @@ import asyncio
 import logging
 from typing import Any
 
-from typing import Any
-
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
@@ -72,19 +70,15 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         raise CannotConnect(f"Connection failed: {err}") from err
 
 
-class ConfigFlow(config_entries.ConfigFlow):
+class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Symi Mesh Gateway."""
 
     VERSION = 1
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize."""
+        super().__init__()
         self._discovered_gateways: list[str] = []
-
-    @property
-    def domain(self) -> str:
-        """Return the domain."""
-        return DOMAIN
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None

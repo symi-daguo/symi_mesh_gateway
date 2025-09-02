@@ -81,41 +81,18 @@ class SymiGatewayCoordinator(DataUpdateCoordinator):
             devices = await self.device_manager.discover_devices()
             
             # Update device registry
-            new_devices = []
             for device in devices:
-                if device.unique_id not in self.devices:
-                    new_devices.append(device)
-                    _LOGGER.info("Found new device: %s (%s)", 
-                               device.mac_address, device.device_name)
-                
                 self.devices[device.unique_id] = device
                 
                 # Initialize device state if not exists
                 if device.unique_id not in self._device_states:
                     self._device_states[device.unique_id] = {}
-            
-            # Trigger entity creation for new devices
-            if new_devices:
-                await self._create_entities_for_devices(new_devices)
-                
+                    
             _LOGGER.info("Device discovery complete. Total devices: %d", len(self.devices))
             
         except Exception as err:
             _LOGGER.error("Error discovering devices: %s", err)
             raise
-
-    async def _create_entities_for_devices(self, devices: list[SymiDevice]) -> None:
-        """Create entities for new devices."""
-        platforms_to_reload = set()
-        
-        for device in devices:
-            if device.platform:
-                platforms_to_reload.add(device.platform)
-        
-        # Reload platforms that have new devices
-        for platform in platforms_to_reload:
-            _LOGGER.info("Reloading platform %s for new devices", platform)
-            await self.hass.config_entries.async_forward_entry_setups(self.entry, [platform])
 
     async def async_control_switch(self, device_id: str, channel: int, state: bool) -> bool:
         """Control switch device."""

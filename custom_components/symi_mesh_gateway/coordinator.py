@@ -78,15 +78,16 @@ class SymiGatewayCoordinator(DataUpdateCoordinator):
         """Discover devices and update registry."""
         try:
             _LOGGER.info("Discovering devices...")
-            devices = await self.device_manager.discover_devices()
             
-            # Update device registry
-            for device in devices:
-                self.devices[device.unique_id] = device
-                
-                # Initialize device state if not exists
-                if device.unique_id not in self._device_states:
-                    self._device_states[device.unique_id] = {}
+            # Send device discovery command and let the message handler process responses
+            await self.device_manager.discover_devices()
+            
+            # Give some time for responses to arrive
+            await asyncio.sleep(2)
+            
+            # Update coordinator devices from device manager
+            self.devices = dict(self.device_manager.devices)
+            self._device_states = dict(self.device_manager.device_states)
                     
             _LOGGER.info("Device discovery complete. Total devices: %d", len(self.devices))
             

@@ -223,14 +223,49 @@ class SymiDeviceManager:
             response = SymiProtocol.parse_response(data)
             if not response:
                 return
+            
+            _LOGGER.debug("Received message: opcode=%02X, status=%02X, length=%d", 
+                         response["opcode"], response["status"], response["length"])
+                
+            # Handle device list responses
+            if (response["opcode"] == OP_DEVICE_LIST_RESPONSE and 
+                response["status"] == RESULT_CMD_OK):
+                self._handle_device_list_response(response["data"])
                 
             # Handle status events
-            if (response["opcode"] == OP_DEVICE_STATUS_EVENT and 
-                response["status"] == RESULT_EVENT_NODE_STATUS):
+            elif (response["opcode"] == OP_DEVICE_STATUS_EVENT and 
+                  response["status"] == RESULT_EVENT_NODE_STATUS):
                 self._handle_status_event(response["data"])
                 
         except Exception as err:
             _LOGGER.error("Error handling message: %s", err)
+    
+    def _handle_device_list_response(self, data: bytes) -> None:
+        """Handle device list response from live data."""
+        try:
+            # Parse device data (16 bytes per device)
+            if len(data) % 16 != 0:
+                _LOGGER.warning("Invalid device data length: %d", len(data))
+                return
+                
+            devices = SymiProtocol.parse_device_list(data)
+            
+            # Update device registry
+            for device in devices:
+                if device.unique_id not in self.devices:
+                    _LOGGER.info("New device discovered: %s (%s)", 
+                               device.mac_address, device.device_name)
+                    
+                self.devices[device.unique_id] = device
+                
+                # Initialize device state if not exists
+                if device.unique_id not in self.device_states:
+                    self.device_states[device.unique_id] = {}
+            
+            _LOGGER.info("Device list updated. Total devices: %d", len(self.devices))
+            
+        except Exception as err:
+            _LOGGER.error("Error handling device list response: %s", err)
     
     def _handle_status_event(self, data: bytes) -> None:
         """Handle device status event."""

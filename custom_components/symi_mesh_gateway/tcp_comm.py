@@ -98,7 +98,12 @@ class SymiTCPConnection:
             self._writer.write(command_bytes)
             await self._writer.drain()
             
-            # Wait for response with timeout
+            # For device list commands, we don't wait for immediate response
+            # as they come through the message listener
+            if command[1] == 0x12:  # OP_READ_DEVICE_LIST
+                return b"\x53\x92\x00\x00\x41"  # Dummy response to indicate command sent
+            
+            # Wait for response with timeout for other commands
             try:
                 response = await asyncio.wait_for(
                     self._read_response(),
@@ -146,8 +151,8 @@ class SymiTCPConnection:
         """Listen for incoming messages."""
         while self._connected and self._reader:
             try:
-                # Try to read incoming data
-                data = await asyncio.wait_for(self._reader.read(1024), timeout=1.0)
+                # Try to read incoming data with a longer timeout
+                data = await asyncio.wait_for(self._reader.read(1024), timeout=5.0)
                 if not data:
                     break
                     
@@ -166,16 +171,41 @@ class SymiTCPConnection:
         if len(data) < 4:
             return
             
-        # Check if this is a valid protocol message
-        if data[0] != PROTOCOL_HEAD:
-            return
+        # Process potentially multiple messages in the buffer
+        offset = 0
+        while offset < len(data):
+            if offset + 4 > len(data):
+                break
+                
+            # Check if this is a valid protocol message
+            if data[offset] != PROTOCOL_HEAD:
+                offset += 1
+                continue
+                
+            # Extract message info
+            head = data[offset]
+            opcode = data[offset + 1]
+            status = data[offset + 2]
+            msg_length = data[offset + 3]
             
-        # Call all registered message handlers
-        for handler in self._message_handlers:
-            try:
-                handler(data)
-            except Exception as err:
-                _LOGGER.error("Error in message handler: %s", err)
+            # Calculate total message size
+            total_size = 4 + msg_length + 1  # header + data + checksum
+            
+            if offset + total_size > len(data):
+                # Incomplete message, wait for more data
+                break
+                
+            # Extract complete message
+            message = data[offset:offset + total_size]
+            
+            # Call all registered message handlers
+            for handler in self._message_handlers:
+                try:
+                    handler(message)
+                except Exception as err:
+                    _LOGGER.error("Error in message handler: %s", err)
+            
+            offset += total_size
 
     def add_message_handler(self, handler: Callable[[bytes], None]) -> None:
         """Add a message handler."""

@@ -6,7 +6,7 @@ from typing import Any
 
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
-    ATTR_COLOR_TEMP,
+    ATTR_COLOR_TEMP_KELVIN,
     ColorMode,
     LightEntity,
 )
@@ -132,9 +132,10 @@ class SymiLightEntity(SymiBaseEntity, LightEntity):
                 self.coordinator._device_states.setdefault(self.device_id, {})["brightness"] = brightness_percent
         
         # Handle color temperature
-        if ATTR_COLOR_TEMP in kwargs and self._device.supports_color_temp:
-            color_temp_mireds = kwargs[ATTR_COLOR_TEMP]
-            # Convert from mireds to percentage
+        if ATTR_COLOR_TEMP_KELVIN in kwargs and self._device.supports_color_temp:
+            color_temp_kelvin = kwargs[ATTR_COLOR_TEMP_KELVIN]
+            # Convert from Kelvin to mireds, then to percentage
+            color_temp_mireds = 1000000 / color_temp_kelvin
             color_temp_percent = int(100 - ((color_temp_mireds - self._attr_min_mireds) * 100 / (self._attr_max_mireds - self._attr_min_mireds)))
             color_temp_percent = max(0, min(100, color_temp_percent))
             
